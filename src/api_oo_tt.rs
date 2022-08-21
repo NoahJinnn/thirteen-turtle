@@ -1,5 +1,10 @@
-//! Pros: Hide implementation, provide service boundaries: validation, monitoring, internal routing, load balancing...
-//! Cons: API couples with implementation, still stateful
+//! Client -> API -> Class
+//! Pros: 
+//! - Encapsulation
+//! - Provide service boundaries: validation, monitoring, internal routing, load balancing...
+//! Cons: 
+//! - API couples with implementation
+//! - Still stateful
 
 use std::fmt::{Display};
 use std::str::FromStr;
@@ -18,7 +23,7 @@ impl Display for ApiErr {
 type Result<T> = std::result::Result<T, ApiErr>;
 
 pub fn validate_distance(d: &str) -> Result<Distance> {
-    let d = f32::from_str(d).unwrap();
+    let d = f32::from_str(d).unwrap(); // throw exceptions is not supported by Rust, so unwrap() is quick way to demo
     Ok(d)
 }
 
@@ -32,7 +37,7 @@ pub fn validate_color(color: &str) -> Result<PenColor> {
     Ok(color)
 }
 
-pub fn turtle_api(command: &str) -> Result<bool> {
+pub fn turtle_oo_api(command: &str) -> Result<bool> {
     let mut tt = Turtle::new();
     let str_v: Vec<&str> = command.split(" ").collect();
     match str_v[0] {
@@ -64,15 +69,15 @@ pub fn turtle_api(command: &str) -> Result<bool> {
 
 #[cfg(test)]
 mod test {
-    use super::turtle_api;
+    use super::turtle_oo_api;
 
     #[test]
     fn draw_triangle() {
-        turtle_api("Move 100.0");
-        turtle_api("Turn 120.0");
-        turtle_api("Move 100.0");
-        turtle_api("Turn 120.0");
-        turtle_api("Move 100.0");
-        turtle_api("Turn 120.0");
+        turtle_oo_api("Move 100.0");
+        turtle_oo_api("Turn 120.0");
+        turtle_oo_api("Move 100.0");
+        turtle_oo_api("Turn 120.0");
+        turtle_oo_api("Move 100.0");
+        turtle_oo_api("Turn 120.0");
     }
 }

@@ -1,13 +1,16 @@
-//! Pros: Easy to understand (OO abstraction)
-//! Cons: Need state management, tight coupling without interface
+//! Pros: Easy to understand (OO abstraction), abstract data from behavior
+//! Cons: 
+//! - Blackbox the state from client
+//! - Hard to composite
+//! - Hard code (tight coupling) other service: log, drawing...
 
 use crate::common::{calc_new_pos, draw_line, Degree, Distance, PenColor, PenState, Position};
 #[allow(dead_code)]
 pub struct Turtle {
-    pub pos: Position,
-    pub angle: Degree,
-    pub pen_state: PenState,
-    pub color: PenColor,
+    pos: Position,
+    angle: Degree,
+    pen_state: PenState,
+    color: PenColor,
 }
 
 #[allow(dead_code)]

@@ -1,5 +1,10 @@
-//! Pros: Easy to understand, stateless, no global state, the functions are modular and reusable in different contexts
-//! Cons: Tight coupling to functions, need to keep track of the state
+//! Pros: 
+//! - Immubility: Easy to reason about
+//! - Stateless, no global state: Easy to composite 
+//! - Functions are modular and reusable in different contexts
+//! Cons: 
+//! - Hardcode dependency in functions, 
+//! - Keep track of the state
 
 #[allow(dead_code)]
 use crate::common::{calc_new_pos, draw_line, Degree, Distance, PenColor, PenState, Position};
@@ -21,60 +26,62 @@ impl Default for TurtleState {
     }
 }
 
-pub fn transit(state: &TurtleState, d: Distance) -> TurtleState {
-    println!("{:.1}", d);
-    let new_pos = calc_new_pos(d, state.angle, &state.pos);
-    match &state.pen_state {
-        PenState::Down => draw_line(&state.pos, &new_pos),
-        _ => {}
+#[allow(dead_code)]
+impl TurtleState {
+    pub fn transit(&self, d: Distance) -> TurtleState {
+        println!("{:.1}", d);
+        let new_pos = calc_new_pos(d, self.angle, &self.pos);
+        match &self.pen_state {
+            PenState::Down => draw_line(&self.pos, &new_pos),
+            _ => {}
+        }
+        TurtleState {
+            pos: new_pos,
+            ..*self
+        }
     }
-    TurtleState {
-        pos: new_pos,
-        ..*state
-    }
-}
 
-pub fn turn(state: &TurtleState, a: Degree) -> TurtleState {
-    println!("{:.1}", a);
-    let new_a = (state.angle + a) % 360.0;
-    TurtleState {
-        angle: new_a,
-        ..*state
+    pub fn turn(&self, a: Degree) -> TurtleState {
+        println!("{:.1}", a);
+        let new_a = (self.angle + a) % 360.0;
+        TurtleState {
+            angle: new_a,
+            ..*self
+        }
     }
-}
 
-pub fn pen_up(state: &TurtleState) -> TurtleState {
-    TurtleState {
-        pen_state: PenState::Up,
-        ..*state
+    pub fn pen_up(&self) -> TurtleState {
+        TurtleState {
+            pen_state: PenState::Up,
+            ..*self
+        }
     }
-}
 
-pub fn pen_down(state: &TurtleState) -> TurtleState {
-    TurtleState {
-        pen_state: PenState::Down,
-        ..*state
+    pub fn pen_down(&self) -> TurtleState {
+        TurtleState {
+            pen_state: PenState::Down,
+            ..*self
+        }
     }
-}
 
-pub fn set_color(state: &TurtleState, color: PenColor) -> TurtleState {
-    TurtleState { color, ..*state }
+    pub fn set_color(self: &TurtleState, color: PenColor) -> TurtleState {
+        TurtleState { color, ..*self }
+    }
 }
 
 #[cfg(test)]
 mod test {
-    use crate::fp_tt::{TurtleState, transit, turn};
-
+    use crate::fp_tt::TurtleState;
 
     #[test]
     fn draw_triangle() {
-        let mut tt_state = TurtleState::default();
-        tt_state = transit(&tt_state, 100.0);
-        tt_state = turn(&tt_state, 120.0);
-        tt_state = transit(&tt_state, 100.0);
-        tt_state = turn(&tt_state, 120.0);
-        tt_state = transit(&tt_state, 100.0);
-        tt_state = turn(&tt_state, 120.0);
+        let tt_state = TurtleState::default()
+            .transit(100.0)
+            .turn(120.0)
+            .transit(100.0)
+            .turn(120.0)
+            .transit(100.0)
+            .turn(120.0);
 
         assert_eq!(tt_state.pos.x, 0.0);
         assert_eq!(tt_state.pos.y, 0.0);
