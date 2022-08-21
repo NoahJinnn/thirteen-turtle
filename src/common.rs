@@ -2,16 +2,44 @@ use std::f32::consts::PI;
 
 pub type Distance = f32;
 pub type Degree = f32;
+
+#[derive(Clone, Copy)]
 pub enum PenState {
     Up,
     Down,
 }
+
+impl Default for PenState {
+    fn default() -> Self {
+        Self::Down
+    }
+}
+
+#[derive(Clone, Copy)]
 pub enum PenColor {
     Black,
     Red,
     Blue,
 }
 
+impl Default for PenColor {
+    fn default() -> Self {
+        Self::Black
+    }
+}
+
+impl From<&str> for PenColor {
+    fn from(s: &str) -> Self {
+        match s {
+            "Black" => PenColor::Black,
+            "Red" => PenColor::Red,
+            "Blue" => PenColor::Blue,
+            _ => panic!("No color is match")
+        }
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct Position {
     pub x: f32,
     pub y: f32,

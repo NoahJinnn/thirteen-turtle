@@ -7,6 +7,8 @@
 
 mod common;
 mod oo_tt;
+mod api_oo_tt;
+mod fp_tt;
 
 fn main() {
     println!("Hello, world!");
